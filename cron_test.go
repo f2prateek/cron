@@ -7,12 +7,12 @@ import (
 )
 
 func TestCron(t *testing.T) {
-	ticker := NewTicker("3 13 * * * *")
+	ticker := NewTicker("27 12 * * * *")
 
 	select {
 	case t := <-ticker.C:
 		fmt.Println("ticked", t)
 	case <-time.After(1 * time.Minute):
-		fmt.Println("timed out")
+		t.Error("cron failed to deliver tick in time")
 	}
 }
