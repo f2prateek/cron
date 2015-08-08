@@ -12,6 +12,9 @@ type Ticker struct {
 	e    *cronexpr.Expression
 }
 
+// NewTicker returns a new Ticker containing a channel that will send the time
+// with a period specified by the spec argument. Stop the ticker to release
+// associated resources.
 func NewTicker(spec string) *Ticker {
 	c := make(chan time.Time, 1)
 	t := &Ticker{
@@ -22,8 +25,9 @@ func NewTicker(spec string) *Ticker {
 
 	go func() {
 		for {
+			next := t.e.Next(time.Now())
 			select {
-			case <-time.After(t.e.Next(time.Now()).Sub(time.Now())):
+			case <-time.After(next.Sub(time.Now())):
 				c <- time.Now()
 			case <-t.done:
 				break
@@ -34,6 +38,9 @@ func NewTicker(spec string) *Ticker {
 	return t
 }
 
+// Stop turns off a ticker. After Stop, no more ticks will be sent. Stop does
+// not close the channel, to prevent a read from the channel succeeding
+// incorrectly.
 func (t *Ticker) Stop() {
 	t.done <- struct{}{}
 }

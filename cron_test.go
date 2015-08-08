@@ -7,12 +7,19 @@ import (
 )
 
 func TestCron(t *testing.T) {
-	ticker := NewTicker("27 12 * * * *")
+	now := time.Now()
+	hour := now.Hour()
+	minute := now.Minute() + 1
+
+	// Schedule cron ticker for the next minute.
+	ticker := NewTicker(fmt.Sprintf("%d %d * * * *", minute, hour))
 
 	select {
-	case t := <-ticker.C:
-		fmt.Println("ticked", t)
+	case <-ticker.C:
+		fmt.Println("ticked")
 	case <-time.After(1 * time.Minute):
 		t.Error("cron failed to deliver tick in time")
 	}
+
+	ticker.Stop()
 }
