@@ -12,7 +12,7 @@ func TestCron(t *testing.T) {
 	minute := now.Minute() + 1
 
 	// Schedule cron ticker for the next minute.
-	ticker := NewTicker(fmt.Sprintf("%d %d * * * *", minute, hour))
+	ticker := New(fmt.Sprintf("%d %d * * * *", minute, hour))
 
 	select {
 	case <-ticker.C:

@@ -15,7 +15,7 @@ type Ticker struct {
 // NewTicker returns a new Ticker containing a channel that will send the time
 // with a period specified by the spec argument. Stop the ticker to release
 // associated resources.
-func NewTicker(spec string) *Ticker {
+func New(spec string) *Ticker {
 	c := make(chan time.Time, 1)
 	t := &Ticker{
 		C:    c,
