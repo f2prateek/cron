@@ -10,7 +10,7 @@ Usage
 ticker := cron.New("40 12 * * * *")
 
 // Wait for a tick. Run inside in a loop if you want to wait repeatedly.
-t := <-time.After(next.Sub(time.Now()))
+t := <-ticker.C
 
 // Do some work.
 doWork()
