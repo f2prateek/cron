@@ -8,12 +8,12 @@ import (
 
 func TestCron(t *testing.T) {
 	now := time.Now()
-	hour := now.Hour()
-	minute := now.Minute() + 1
+	hour, minute := now.Hour(), now.Minute()+1
 
 	// Schedule cron ticker for the next minute.
 	ticker := New(fmt.Sprintf("%d %d * * * *", minute, hour))
 
+	// Wait for the tick for a minute.
 	select {
 	case <-ticker.C:
 		fmt.Println("ticked")
