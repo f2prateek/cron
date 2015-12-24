@@ -9,23 +9,27 @@ import (
 type Ticker struct {
 	C    <-chan time.Time // The channel on which the ticks are delivered.
 	done chan struct{}    // The channel on which the stop signal is delivered.
-	e    *cronexpr.Expression
+	expr *cronexpr.Expression
 }
 
 // NewTicker returns a new Ticker containing a channel that will send the time
 // with a period specified by the spec argument. Stop the ticker to release
 // associated resources.
-func New(spec string) *Ticker {
+func New(spec string) (*Ticker, error) {
+	expr, err := cronexpr.Parse(spec)
+	if err != nil {
+		return nil, err
+	}
 	c := make(chan time.Time, 1)
 	t := &Ticker{
 		C:    c,
 		done: make(chan struct{}, 1),
-		e:    cronexpr.MustParse(spec),
+		expr: expr,
 	}
 
 	go func() {
 		for {
-			next := t.e.Next(time.Now())
+			next := t.expr.Next(time.Now())
 			select {
 			case <-time.After(next.Sub(time.Now())):
 				c <- time.Now()
@@ -35,7 +39,7 @@ func New(spec string) *Ticker {
 		}
 	}()
 
-	return t
+	return t, nil
 }
 
 // Stop turns off a ticker. After Stop, no more ticks will be sent. Stop does
