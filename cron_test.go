@@ -1,25 +1,21 @@
-package cron
+package cron_test
 
 import (
-	"fmt"
 	"testing"
 	"time"
+
+	"github.com/f2prateek/cron"
 )
 
 func TestCron(t *testing.T) {
-	now := time.Now()
-	hour, minute := now.Hour(), now.Minute()+1
+	// Schedule a cron ticker for every 5 seconds.
+	ticker := cron.New("0/5 * * * * * *")
+	defer ticker.Stop()
 
-	// Schedule cron ticker for the next minute.
-	ticker := New(fmt.Sprintf("%d %d * * * *", minute, hour))
-
-	// Wait for the tick for a minute.
+	// Wait for the tick to be delivered with 10 seconds.
 	select {
 	case <-ticker.C:
-		fmt.Println("ticked")
-	case <-time.After(1 * time.Minute):
+	case <-time.After(10 * time.Second):
 		t.Error("cron failed to deliver tick in time")
 	}
-
-	ticker.Stop()
 }
