@@ -9,10 +9,7 @@ import (
 
 func TestCron(t *testing.T) {
 	// Schedule a cron ticker for every 5 seconds.
-	ticker, err := cron.New("0/5 * * * * * *")
-	if err != nil {
-		t.Error(err)
-	}
+	ticker := cron.Must(cron.Parse("0/5 * * * * * *"))
 	defer ticker.Stop()
 
 	// Wait for the tick to be delivered with 10 seconds.

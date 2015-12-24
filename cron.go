@@ -12,10 +12,21 @@ type Ticker struct {
 	expr *cronexpr.Expression
 }
 
-// NewTicker returns a new Ticker containing a channel that will send the time
+// Must is a helper that wraps a call to a function returning (*Ticker, error)
+// and panics if the error is non-nil. It is intended for use in variable
+// initializations such as
+// var t = cron.Must(cron.Parse("spec"))
+func Must(t *Ticker, err error) *Ticker {
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
+// Parse returns a new Ticker containing a channel that will send the time
 // with a period specified by the spec argument. Stop the ticker to release
 // associated resources.
-func New(spec string) (*Ticker, error) {
+func Parse(spec string) (*Ticker, error) {
 	expr, err := cronexpr.Parse(spec)
 	if err != nil {
 		return nil, err

@@ -7,7 +7,7 @@ Usage
 =====
 ```go
 // Create a ticker.
-ticker := cron.New("40 12 * * * *")
+ticker := cron.Must(cron.Parse("0/5 * * * * * *"))
 
 // Wait for a tick. Run inside in a loop if you want to wait repeatedly.
 t := <-ticker.C

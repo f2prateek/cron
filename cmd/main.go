@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	t, err := cron.New(os.Args[1])
+	t, err := cron.Parse(os.Args[1])
 	if err != nil {
 		log.Fatal(err)
 	}
