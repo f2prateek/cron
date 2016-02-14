@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 
 	"github.com/f2prateek/cron"
 )
@@ -18,6 +19,12 @@ func main() {
 
 	for {
 		<-t.C
-		fmt.Println("ticked", cmd, args)
+
+		cmd := exec.Command(cmd, args...)
+		out, err := cmd.CombinedOutput()
+		fmt.Printf(string(out))
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
