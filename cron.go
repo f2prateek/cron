@@ -3,8 +3,11 @@ package cron
 import (
 	"time"
 
+	"github.com/f2prateek/clock"
 	"github.com/gorhill/cronexpr"
 )
+
+var c = clock.Default()
 
 type Ticker struct {
 	C    <-chan time.Time // The channel on which the ticks are delivered.
@@ -30,26 +33,26 @@ func Parse(spec string) (*Ticker, error) {
 	if err != nil {
 		return nil, err
 	}
-	c := make(chan time.Time, 1)
-	t := &Ticker{
-		C:    c,
+	tickerC := make(chan time.Time, 1)
+	ticker := &Ticker{
+		C:    tickerC,
 		done: make(chan struct{}, 1),
 		expr: expr,
 	}
 
 	go func() {
 		for {
-			next := t.expr.Next(time.Now())
+			next := ticker.expr.Next(c.Now())
 			select {
-			case <-time.After(next.Sub(time.Now())):
-				c <- time.Now()
-			case <-t.done:
+			case <-time.After(next.Sub(c.Now())):
+				tickerC <- c.Now()
+			case <-ticker.done:
 				break
 			}
 		}
 	}()
 
-	return t, nil
+	return ticker, nil
 }
 
 // Stop turns off a ticker. After Stop, no more ticks will be sent. Stop does
