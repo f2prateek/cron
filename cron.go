@@ -33,6 +33,7 @@ func Parse(spec string) (*Ticker, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	tickerC := make(chan time.Time, 1)
 	ticker := &Ticker{
 		C:    tickerC,
