@@ -14,8 +14,7 @@ type Ticker struct {
 
 // Must is a helper that wraps a call to a function returning (*Ticker, error)
 // and panics if the error is non-nil. It is intended for use in variable
-// initializations such as
-// var t = cron.Must(cron.Parse("spec"))
+// initializations such as `var t = cron.Must(cron.Parse("spec"))`
 func Must(t *Ticker, err error) *Ticker {
 	if err != nil {
 		panic(err)
